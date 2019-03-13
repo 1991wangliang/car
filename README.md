@@ -1,7 +1,7 @@
 # 机器学习demo- 倒车入库
 
 
-![](./demo.png)
+![](html/demo.png)
 
 项目介绍：
 
