@@ -51,8 +51,27 @@
     function picture() {
         html2canvas(document.getElementById('view')).then( function(canvas) {
             var url = canvas.toDataURL();
+            var myImage = canvas.toDataURL("image/jpeg");
             console.log(url);
             $("#img").attr("src", url);
+            var formData = new FormData();
+            formData.append("content","123123");
+            formData.append("picture",myImage);
+
+            $.ajax({
+                type:'POST',
+                url:'http://127.0.0.1:8080/save',
+                data: formData,
+                dataType:'json',
+                processData:false,
+                contentType:false,
+                success:function (data) {
+                    alert(JSON.stringify(data))
+                },
+                error:function (data) {
+                    alert(JSON.stringify(data))
+                }
+            });
         });
     }
 
