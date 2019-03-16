@@ -20,6 +20,7 @@
 
     <modules>
         <module>dl4j-car-data</module>
+        <module>dl4j-car-detection</module>
     </modules>
 
     <properties>
@@ -27,6 +28,7 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

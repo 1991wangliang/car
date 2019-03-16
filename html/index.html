@@ -92,6 +92,10 @@
             $("#img").attr("src", url);
             var formData = new FormData();
             var car = $("#car");
+
+            console.log(getPoint(car));
+            console.log(getParkingPoint());
+
             formData.append("car",JSON.stringify(getPoint(car)));
             formData.append("parking",JSON.stringify(getParkingPoint()));
             formData.append("picture",myImage);
@@ -121,7 +125,7 @@
         if(code==37){//←
             if(direction!=0){
                 direction = 0;
-                car.rotate({animateTo: direction,callback:function () {
+                car.rotate({animateTo: direction,duration:10,callback:function () {
                         picture();
                     }});
                 $("#direction").val(direction);
@@ -135,7 +139,7 @@
         if(code==39){//→
             if(direction!=180) {
                 direction = 180;
-                car.rotate({animateTo: direction,callback:function () {
+                car.rotate({animateTo: direction,duration:10,callback:function () {
                         picture();
                     }});
                 $("#direction").val(direction);
@@ -150,7 +154,7 @@
         if(code==38){//↑
             if(direction!=90) {
                 direction = 90;
-                car.rotate({animateTo: direction,callback:function () {
+                car.rotate({animateTo: direction,duration:10,callback:function () {
                         picture();
                     }});
                 $("#direction").val(direction);
@@ -165,7 +169,7 @@
         if(code==40){//↓
             if(direction!=270) {
                 direction = 270;
-                car.rotate({animateTo: direction,callback:function () {
+                car.rotate({animateTo: direction,duration:10,callback:function () {
                         picture();
                     }});
                 $("#direction").val(direction);
