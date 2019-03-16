@@ -28,11 +28,13 @@
     <img class="car" id="car" src="car.png" />
     </div>
 
-    <div style="position: absolute;right:10px;top: 0px;" >
-        <img  src="" id="img" width="300px" />
+    <div style="position: absolute;right:10px;top: 0px;width: 300px" >
+        <canvas style="position: absolute;z-index: 100" width="300px" height="300px" id="canvas"></canvas>
+        <img style="position: absolute"  src="" id="img" width="300px" />
     </div>
     <input type="number" value="5" id="step" >
     <input type="number" value="0" id="direction" >
+    <button id="rect">rect</button>
 </body>
 
 <script>
@@ -43,8 +45,17 @@
         return true;
     };
 
-    var direction = 0;
 
+    $("#rect").on("click",function () {
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        context.strokeStyle = "#0000ff";
+        context.rect(20, 20, 60, 60);
+        context.stroke();
+        return false;
+    });
+
+    var direction = 0;
 
     function getPoint(obj) {
         var xmin,ymin,xmax,ymax;

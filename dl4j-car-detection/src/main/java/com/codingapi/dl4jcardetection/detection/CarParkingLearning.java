@@ -131,13 +131,6 @@ public class CarParkingLearning {
         }
         INDArray priors = Nd4j.create(priorBoxes);
 
-        WorkspaceConfiguration basicConfig = WorkspaceConfiguration.builder()
-                .policyAllocation(AllocationPolicy.STRICT)
-                .policyLearning(LearningPolicy.FIRST_LOOP)
-                .policyMirroring(MirroringPolicy.HOST_ONLY) // <--- this option does this trick
-                .policySpill(SpillPolicy.EXTERNAL)
-                .build();
-
         FineTuneConfiguration fineTuneConf = new FineTuneConfiguration.Builder()
                 .seed(seed)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)

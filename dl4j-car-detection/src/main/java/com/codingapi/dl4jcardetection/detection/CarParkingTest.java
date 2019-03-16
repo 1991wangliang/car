@@ -82,6 +82,7 @@ public class CarParkingTest {
     }
 
     public void test(String pitcute) {
+        System.out.println(model.summary());
         NativeImageLoader imageLoader = new NativeImageLoader();
         org.deeplearning4j.nn.layers.objdetect.Yolo2OutputLayer yout = (org.deeplearning4j.nn.layers.objdetect.Yolo2OutputLayer) model.getOutputLayer(0);
         List<String> labels = Arrays.asList("car","parking");
