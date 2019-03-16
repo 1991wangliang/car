@@ -1,4 +1,4 @@
-package com.codingapi.dl4jcardata;
+package com.codingapi.dl4jcardetection;
 
 
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.codingapi.dl4jcardata.service;
+package com.codingapi.dl4jcardetection.service;
 
 public interface IndexService {
 

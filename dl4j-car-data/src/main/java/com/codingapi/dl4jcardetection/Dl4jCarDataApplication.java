@@ -1,6 +1,6 @@
-package com.codingapi.dl4jcardata;
+package com.codingapi.dl4jcardetection;
 
-import com.codingapi.dl4jcardata.config.CarConfig;
+import com.codingapi.dl4jcardetection.config.CarConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

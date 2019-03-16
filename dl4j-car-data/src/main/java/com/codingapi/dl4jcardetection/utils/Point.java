@@ -1,4 +1,4 @@
-package com.codingapi.dl4jcardata.utils;
+package com.codingapi.dl4jcardetection.utils;
 
 public class Point {
     private String label;

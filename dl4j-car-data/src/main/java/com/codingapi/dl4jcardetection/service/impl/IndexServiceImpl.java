@@ -1,11 +1,11 @@
-package com.codingapi.dl4jcardata.service.impl;
+package com.codingapi.dl4jcardetection.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.dl4jcardata.config.CarConfig;
-import com.codingapi.dl4jcardata.service.IndexService;
-import com.codingapi.dl4jcardata.utils.Point;
-import com.codingapi.dl4jcardata.utils.UUIDUtils;
-import com.codingapi.dl4jcardata.utils.XmlUtils;
+import com.codingapi.dl4jcardetection.config.CarConfig;
+import com.codingapi.dl4jcardetection.service.IndexService;
+import com.codingapi.dl4jcardetection.utils.Point;
+import com.codingapi.dl4jcardetection.utils.UUIDUtils;
+import com.codingapi.dl4jcardetection.utils.XmlUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

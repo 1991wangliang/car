@@ -7,12 +7,21 @@ import java.io.File;
 @ConfigurationProperties(prefix = "car.config")
 public class CarConfig {
 
-    private final String _Annotations = "Annotations";
-    private final String _JPEGImages = "JPEGImages";
+    private final static String _Annotations = "Annotations";
+    private final static String _JPEGImages = "JPEGImages";
 
     private String path;
     private int batchSize = 2;
     private int nEpochs = 50;
+    private double detectionThreshold=0.5;
+
+    public double getDetectionThreshold() {
+        return detectionThreshold;
+    }
+
+    public void setDetectionThreshold(double detectionThreshold) {
+        this.detectionThreshold = detectionThreshold;
+    }
 
     public int getBatchSize() {
         return batchSize;

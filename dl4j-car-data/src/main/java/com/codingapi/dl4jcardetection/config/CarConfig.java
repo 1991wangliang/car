@@ -1,4 +1,4 @@
-package com.codingapi.dl4jcardata.config;
+package com.codingapi.dl4jcardetection.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

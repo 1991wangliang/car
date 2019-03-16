@@ -1,6 +1,6 @@
-package com.codingapi.dl4jcardata.controller;
+package com.codingapi.dl4jcardetection.controller;
 
-import com.codingapi.dl4jcardata.service.IndexService;
+import com.codingapi.dl4jcardetection.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
