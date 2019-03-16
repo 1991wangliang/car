@@ -12,29 +12,27 @@
             top:10px;
             left:400px;
             background-color: #46a50c;
-            width: 150px;
-            height: 150px;
+            width: 80px;
+            height: 120px;
             z-index: 1;
         }
         .car{
-            position:absolute;top: 500px;left: 500px;width: 100px;z-index: 2;
+            position:absolute;top: 500px;left: 500px;width: 100px;height:50px;z-index: 2;
         }
 
     </style>
 </head>
 <body>
     <div id="view" style="position: relative;width: 800px;height: 800px;background-color: bisque">
-    <div class="parking"></div>
+    <div class="parking" id="parking"></div>
     <img class="car" id="car" src="car.png" />
     </div>
 
     <div style="position: absolute;right:10px;top: 0px;" >
         <img  src="" id="img" width="300px" />
     </div>
-    <input type="number" value="20" id="step" >
+    <input type="number" value="5" id="step" >
     <input type="number" value="0" id="direction" >
-
-
 </body>
 
 <script>
@@ -48,14 +46,54 @@
     var direction = 0;
 
 
+    function getPoint(obj) {
+        var xmin,ymin,xmax,ymax;
+        xmin = obj.offset().left-8;
+        ymin = obj.offset().top-8;
+        if(direction==0||direction==180){
+            xmax = obj.offset().left-8+obj.width();
+            ymax =obj.offset().top-8+obj.height();
+        }else{
+            xmax = obj.offset().left-8+obj.height();
+            ymax =obj.offset().top-8+obj.width();
+        }
+        var data = {
+            label:'car',
+            xmin:xmin,
+            xmax:xmax,
+            ymin:ymin,
+            ymax:ymax
+        }
+        return data;
+    }
+
+    function getParkingPoint() {
+        var parking = $("#parking");
+        var xmin,ymin,xmax,ymax;
+        xmin = parking.offset().left-8;
+        ymin = parking.offset().top-8;
+        xmax = parking.offset().left-8+parking.width();
+        ymax = parking.offset().top-8+parking.height();
+        var data = {
+            label:'parking',
+            xmin:xmin,
+            xmax:xmax,
+            ymin:ymin,
+            ymax:ymax
+        }
+        return data;
+    }
+
     function picture() {
         html2canvas(document.getElementById('view')).then( function(canvas) {
             var url = canvas.toDataURL();
             var myImage = canvas.toDataURL("image/jpeg");
-            console.log(url);
+            // console.log(url);
             $("#img").attr("src", url);
             var formData = new FormData();
-            formData.append("content","123123");
+            var car = $("#car");
+            formData.append("car",JSON.stringify(getPoint(car)));
+            formData.append("parking",JSON.stringify(getParkingPoint()));
             formData.append("picture",myImage);
 
             $.ajax({
@@ -66,17 +104,17 @@
                 processData:false,
                 contentType:false,
                 success:function (data) {
-                    alert(JSON.stringify(data))
+                    // alert(JSON.stringify(data))
                 },
                 error:function (data) {
-                    alert(JSON.stringify(data))
+                    // alert(JSON.stringify(data))
                 }
             });
         });
     }
 
     function move(code){
-        picture();
+
         var car = $("#car");
         var step = $("#step").val();
         
@@ -90,7 +128,7 @@
                 return true;
             }
 
-            car.animate({left:'-='+step},code*10,function () {
+            car.animate({left:'-='+step},50,function () {
                 picture();
             });
         }
@@ -104,7 +142,7 @@
                 return true;
             }
 
-            car.animate({left:'+='+step},code*10,function () {
+            car.animate({left:'+='+step},50,function () {
                 picture();
             });
         }
@@ -119,7 +157,7 @@
                 return true;
             }
 
-            car.animate({top:'-='+step},code*10,function () {
+            car.animate({top:'-='+step},50,function () {
                 picture();
             });
         }
@@ -133,14 +171,11 @@
                 $("#direction").val(direction);
                 return true;
             }
-            car.animate({top:'+='+step},code*10,function () {
+            car.animate({top:'+='+step},50,function () {
                 picture();
             });
         }
-
     }
-    
-
 
 </script>
 </html>
