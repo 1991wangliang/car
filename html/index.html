@@ -28,13 +28,15 @@
     <img class="car" id="car" src="car.png" />
     </div>
 
-    <div style="position: absolute;right:10px;top: 0px;width: 300px" >
-        <canvas style="position: absolute;z-index: 100" width="300px" height="300px" id="canvas"></canvas>
-        <img style="position: absolute"  src="" id="img" width="300px" />
+    <div style="position: absolute;right:10px;top: 0px;width: 800px" >
+        <canvas style="position: absolute;z-index: 100" width="800px" height="800px" id="canvas"></canvas>
+        <img style="position: absolute"  src="" id="img" width="800px" />
     </div>
     <input type="number" value="5" id="step" >
     <input type="number" value="0" id="direction" >
-    <button id="rect">rect</button>
+
+    <ul id="data" style="position: absolute;left: 800px;top: 0px;">
+    </ul>
 </body>
 
 <script>
@@ -45,15 +47,72 @@
         return true;
     };
 
+    loadList();
 
-    $("#rect").on("click",function () {
+    function loadList() {
+        $.ajax({
+            type:'GET',
+            url:'http://127.0.0.1:8080/list',
+            dataType:'json',
+            processData:false,
+            contentType:false,
+            success:function (data) {
+                // alert(JSON.stringify(data))
+                $("ul").empty();
+                for(var index in data){
+                    $("ul").append('<li style="cursor: pointer;font-size: 8px">'+data[index]+'</li>');
+                }
+            },
+            error:function (data) {
+                // alert(JSON.stringify(data))
+            }
+        });
+    }
+
+    function addPoint(point){
         var canvas = document.getElementById("canvas");
         var context = canvas.getContext("2d");
         context.strokeStyle = "#0000ff";
-        context.rect(20, 20, 60, 60);
+        context.rect(point.xmin, point.ymin, point.xmax-point.xmin, point.ymax- point.ymin);
         context.stroke();
+    }
+
+    function clearPoint(){
+        var c=document.getElementById("canvas");
+        var cxt=c.getContext("2d");
+        c.height=c.height;
+    }
+
+    $(document).on("click","li",function () {
+
+        var path = $(this).text();
+        path = path.replace(".xml","");
+        checkPoint(path);
+    })
+
+     var checkPoint = function (file) {
+        var formData = new FormData();
+        formData.append("file",file);
+        $.ajax({
+            type:'POST',
+            url:'http://127.0.0.1:8080/checkPoint',
+            data: formData,
+            dataType:'json',
+            processData:false,
+            contentType:false,
+            success:function (data) {
+                // alert(JSON.stringify(data))
+                clearPoint();
+                $("#img").attr("src", data.base64);
+                addPoint(data.car);
+                addPoint(data.parking);
+            },
+            error:function (data) {
+                // alert(JSON.stringify(data))
+            }
+        });
         return false;
-    });
+    }
 
     var direction = 0;
 

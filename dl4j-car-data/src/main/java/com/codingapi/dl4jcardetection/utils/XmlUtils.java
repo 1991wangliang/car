@@ -1,5 +1,10 @@
 package com.codingapi.dl4jcardetection.utils;
 
+import com.codingapi.dl4jcardetection.vo.ResPoint;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.XML;
+
 public class XmlUtils {
 
     private final static  String xml = "<annotation verified=\"no\">\n" +
@@ -53,5 +58,32 @@ public class XmlUtils {
         newXml = newXml.replace("#{car.ymin}",car.getYmin());
         return newXml;
     }
+
+    public static ResPoint xml2ResPoint(String xml) {
+        JSONObject xmlObj =  XML.toJSONObject(xml);
+        if(xmlObj==null||xmlObj.isNull("annotation")){
+            throw new RuntimeException("no data");
+        }
+        ResPoint resPoint = new ResPoint();
+        JSONArray jsonArray =  xmlObj.getJSONObject("annotation").getJSONArray("object");
+        for(int i=0;i<jsonArray.length();i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String name = jsonObject.getString("name");
+            JSONObject bndbox =  jsonObject.getJSONObject("bndbox");
+            Point point = new Point();
+            point.setLabel(name);
+            point.setXmin(String.valueOf(bndbox.getInt("xmin")));
+            point.setXmax(String.valueOf(bndbox.getInt("xmax")));
+            point.setYmin(String.valueOf(bndbox.getInt("ymin")));
+            point.setYmax(String.valueOf(bndbox.getInt("ymax")));
+            if(name.equals("car")){
+                resPoint.setCar(point);
+            }else{
+                resPoint.setParking(point);
+            }
+        }
+        return resPoint;
+    }
+
 
 }

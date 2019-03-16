@@ -52,25 +52,23 @@ public class CarParkingLearning {
     @Autowired
     private CarConfig carConfig;
 
-    // parameters matching the pretrained TinyYOLO model
-    int width = 800;
-    int height = 800;
-    int nChannels = 3;
-
-    int gridWidth = width / 32;
-    int gridHeight = height / 32;
-
-    // number classes for the Car Or Parking
-    int nClasses = 2;
-
-    // parameters for the Yolo2OutputLayer
-    int nBoxes = 4;
-    double lambdaNoObj = 0.5;
-    double lambdaCoord = 5.0;
-    double[][] priorBoxes = {{100, 50}, {80, 120}, {120, 80}, {50, 100}};
-
     public void learning() {
+        // parameters matching the pretrained TinyYOLO model
+        int width = 800;
+        int height = 800;
+        int nChannels = 3;
 
+        int gridWidth = width / 32;
+        int gridHeight = height / 32;
+
+        // number classes for the Car Or Parking
+        int nClasses = 2;
+
+        // parameters for the Yolo2OutputLayer
+        int nBoxes = 4;
+        double lambdaNoObj = 0.5;
+        double lambdaCoord = 5.0;
+        double[][] priorBoxes = {{100, 50}, {80, 120}, {120, 80}, {50, 100}};
 
         // parameters for the training phase
         int batchSize = carConfig.getBatchSize();
@@ -147,10 +145,21 @@ public class CarParkingLearning {
         model = new TransferLearning.GraphBuilder(pretrained).fineTuneConfiguration(fineTuneConf).removeVertexKeepConnections("conv2d_9")
                 .removeVertexKeepConnections("outputs")
                 .addLayer("convolution2d_9",
-                        new ConvolutionLayer.Builder(1, 1).nIn(1024).nOut(nBoxes * (5 + nClasses)).stride(1, 1).convolutionMode(ConvolutionMode.Same)
-                                .weightInit(WeightInit.UNIFORM).hasBias(false).activation(Activation.IDENTITY).build(),
+                        new ConvolutionLayer.Builder(1, 1)
+                                .nIn(1024)
+                                .nOut(nBoxes * (5 + nClasses))
+                                .stride(1, 1)
+                                .convolutionMode(ConvolutionMode.Same)
+                                .weightInit(WeightInit.XAVIER)
+                                .activation(Activation.IDENTITY)
+                                .build(),
                         "leaky_re_lu_8")
-                .addLayer("outputs", new Yolo2OutputLayer.Builder().lambbaNoObj(lambdaNoObj).lambdaCoord(lambdaCoord).boundingBoxPriors(priors).build(),
+                .addLayer("outputs",
+                        new Yolo2OutputLayer.Builder()
+                                .lambbaNoObj(lambdaNoObj)
+                                .lambdaCoord(lambdaCoord)
+                                .boundingBoxPriors(priors)
+                                .build(),
                         "convolution2d_9")
                 .setOutputs("outputs")
                 .build();
