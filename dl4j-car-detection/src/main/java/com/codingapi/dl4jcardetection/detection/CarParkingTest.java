@@ -26,6 +26,7 @@ import org.deeplearning4j.util.ModelSerializer;
 import org.deeplearning4j.zoo.model.TinyYOLO;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Adam;
@@ -57,8 +58,8 @@ public class CarParkingTest {
     private final CarConfig carConfig;
 
     // parameters matching the pretrained TinyYOLO model
-    int width = 800;
-    int height = 800;
+    int width = 416;
+    int height = 416;
 
 
     int gridWidth = width / 32;
@@ -89,6 +90,8 @@ public class CarParkingTest {
         INDArray features = null;
         try {
             features = imageLoader.asMatrix(new File(carConfig.getPath()+"/"+pitcute));
+            DataNormalization scaler = new ImagePreProcessingScaler(0,1);
+            scaler.transform(features);
         } catch (IOException e) {
             throw new RuntimeException("image load fail ",e);
         }

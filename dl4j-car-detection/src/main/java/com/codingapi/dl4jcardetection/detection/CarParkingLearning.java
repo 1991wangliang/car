@@ -54,8 +54,8 @@ public class CarParkingLearning {
 
     public void learning() {
         // parameters matching the pretrained TinyYOLO model
-        int width = 800;
-        int height = 800;
+        int width = 416;
+        int height = 416;
         int nChannels = 3;
 
         int gridWidth = width / 32;
@@ -65,10 +65,11 @@ public class CarParkingLearning {
         int nClasses = 2;
 
         // parameters for the Yolo2OutputLayer
-        int nBoxes = 4;
+
         double lambdaNoObj = 0.5;
         double lambdaCoord = 5.0;
-        double[][] priorBoxes = {{100, 50}, {80, 120}, {120, 80}, {50, 100}};
+        double[][] priorBoxes = {{2, 1}, {3, 2}, {3, 2}, {1, 2}, {2, 2}, {3, 3}};
+        int nBoxes = priorBoxes.length;
 
         // parameters for the training phase
         int batchSize = carConfig.getBatchSize();

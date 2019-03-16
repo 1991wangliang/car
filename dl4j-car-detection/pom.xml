@@ -12,7 +12,8 @@
     <artifactId>dl4j-car-detection</artifactId>
 
     <properties>
-        <nd4j.backend>nd4j-cuda-10.0-platform</nd4j.backend>
+        <!--<nd4j.backend>nd4j-cuda-10.0-platform</nd4j.backend>-->
+        <nd4j.backend>nd4j-native-platform</nd4j.backend>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <shadedClassifier>bin</shadedClassifier>
 
