@@ -60,10 +60,11 @@ public class CarParkingLearning {
         int nClasses = 2;
 
         // parameters for the Yolo2OutputLayer
-        int nBoxes = 4;
+
         double lambdaNoObj = 0.5;
         double lambdaCoord = 5.0;
-        double[][] priorBoxes = {{100, 50}, {80, 120}, {120, 80}, {50, 100}};
+        double[][] priorBoxes = {{2, 1}, {3, 2}, {3, 2}, {1, 2}, {2, 2}, {3, 3}};
+        int nBoxes = priorBoxes.length;
 
         // parameters for the training phase
         int batchSize = carConfig.getBatchSize();
