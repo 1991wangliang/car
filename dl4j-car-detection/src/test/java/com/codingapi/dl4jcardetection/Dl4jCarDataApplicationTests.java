@@ -14,10 +14,10 @@ public class Dl4jCarDataApplicationTests {
     @Autowired
     private CarParkingTest carParkingTest;
 
+
     @Test
     public void contextLoads() {
-
-        carParkingTest.test("123.jpg");
+        carParkingTest.test("1234.jpg");
     }
 
 }

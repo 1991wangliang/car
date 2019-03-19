@@ -13,7 +13,11 @@ public class CarConfig {
     private String path;
     private int batchSize = 2;
     private int nEpochs = 50;
-    private double detectionThreshold=0.3;
+    private double detectionThreshold=0.8;
+
+    public CarConfig() {
+        path = "c://test";
+    }
 
     public double getDetectionThreshold() {
         return detectionThreshold;

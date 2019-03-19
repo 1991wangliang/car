@@ -23,11 +23,6 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.deeplearning4j.zoo.model.TinyYOLO;
 import org.nd4j.linalg.activations.Activation;
-import org.nd4j.linalg.api.memory.conf.WorkspaceConfiguration;
-import org.nd4j.linalg.api.memory.enums.AllocationPolicy;
-import org.nd4j.linalg.api.memory.enums.LearningPolicy;
-import org.nd4j.linalg.api.memory.enums.MirroringPolicy;
-import org.nd4j.linalg.api.memory.enums.SpillPolicy;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
 import org.nd4j.linalg.factory.Nd4j;
@@ -54,8 +49,8 @@ public class CarParkingLearning {
 
     public void learning() {
         // parameters matching the pretrained TinyYOLO model
-        int width = 800;
-        int height = 800;
+        int width = 416;
+        int height = 416;
         int nChannels = 3;
 
         int gridWidth = width / 32;
