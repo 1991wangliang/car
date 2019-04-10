@@ -1,5 +1,6 @@
 package com.codingapi.dl4jcardetection;
 
+import com.codingapi.dl4jcardetection.detection.CarParkingLearning;
 import com.codingapi.dl4jcardetection.detection.CarParkingTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +15,18 @@ public class Dl4jCarDataApplicationTests {
     @Autowired
     private CarParkingTest carParkingTest;
 
+    @Autowired
+    private CarParkingLearning carParkingLearning;
+
 
     @Test
-    public void contextLoads() {
-        carParkingTest.test("1234.jpg");
+    public void test() {
+        carParkingTest.test("123.jpg");
+    }
+
+    @Test
+    public void running(){
+        carParkingLearning.learning();
     }
 
 }

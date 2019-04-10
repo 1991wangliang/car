@@ -49,8 +49,8 @@ public class CarParkingLearning {
 
     public void learning() {
         // parameters matching the pretrained TinyYOLO model
-        int width = 416;
-        int height = 416;
+        int width = 800;
+        int height = 800;
         int nChannels = 3;
 
         int gridWidth = width / 32;
