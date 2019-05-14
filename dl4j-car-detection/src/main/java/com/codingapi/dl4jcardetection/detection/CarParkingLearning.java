@@ -32,6 +32,7 @@ import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.learning.config.Nesterovs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,14 +72,14 @@ public class CarParkingLearning {
 
         double lambdaNoObj = 0.5;
         double lambdaCoord = 5.0;
-        double[][] priorBoxes = {{2, 1}, {3, 2}, {3, 2}, {1, 2}, {2, 2}, {3, 3}};
+        double[][] priorBoxes = {{2, 1},{1, 2}, {1, 1}};
         int nBoxes = priorBoxes.length;
 
         // parameters for the training phase
         int batchSize = carConfig.getBatchSize();
 //        int nEpochs = carConfig.getnEpochs();
-        double learningRate = 1e-4;
-        double lrMomentum = 0.5;
+        double learningRate = 1e-6;
+//        double lrMomentum = 0.5;
 
         int seed = 123;
         Random rng = new Random(seed);
@@ -138,8 +139,8 @@ public class CarParkingLearning {
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .gradientNormalization(GradientNormalization.RenormalizeL2PerLayer)
                 .gradientNormalizationThreshold(1.0)
-//                .updater(new Adam.Builder().learningRate(learningRate).build())
-                .updater(new Nesterovs.Builder().learningRate(learningRate).momentum(lrMomentum).build())
+                .updater(new Adam.Builder().learningRate(learningRate).build())
+//                .updater(new Nesterovs.Builder().learningRate(learningRate).momentum(lrMomentum).build())
                 .activation(Activation.IDENTITY)
                 .trainingWorkspaceMode(WorkspaceMode.ENABLED)
                 .inferenceWorkspaceMode(WorkspaceMode.ENABLED)
@@ -153,7 +154,7 @@ public class CarParkingLearning {
                 .addLayer("convolution2d_9",
                         new ConvolutionLayer.Builder(1, 1)
                                 .nIn(1024)
-                                .nOut(nBoxes * (5 + nClasses))
+                                .nOut(nBoxes * (5+ nClasses))
                                 .stride(1, 1)
                                 .convolutionMode(ConvolutionMode.Same)
                                 .weightInit(WeightInit.XAVIER)
@@ -176,7 +177,7 @@ public class CarParkingLearning {
 
         EarlyStoppingModelSaver<ComputationGraph> saver = new LocalFileGraphSaver(dataDir);
         EarlyStoppingConfiguration.Builder<ComputationGraph> builder = new EarlyStoppingConfiguration.Builder<ComputationGraph>();
-        builder.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(10000, 2));
+        builder.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(10000, 0.01));
         builder.evaluateEveryNEpochs(1);
         builder.scoreCalculator(new DataSetLossCalculator(test, true));
         builder.modelSaver(saver);
