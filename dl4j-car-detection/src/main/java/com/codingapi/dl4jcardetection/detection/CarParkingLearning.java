@@ -11,10 +11,9 @@ import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
 import org.deeplearning4j.earlystopping.EarlyStoppingResult;
-import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver;
+import org.deeplearning4j.earlystopping.saver.LocalFileGraphSaver;
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
-import org.deeplearning4j.earlystopping.termination.BestScoreEpochTerminationCondition;
-import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
 import org.deeplearning4j.earlystopping.trainer.EarlyStoppingGraphTrainer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.ConvolutionMode;
@@ -27,12 +26,13 @@ import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.transferlearning.FineTuneConfiguration;
 import org.deeplearning4j.nn.transferlearning.TransferLearning;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.zoo.model.TinyYOLO;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.linalg.learning.config.Nesterovs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +77,8 @@ public class CarParkingLearning {
         // parameters for the training phase
         int batchSize = carConfig.getBatchSize();
 //        int nEpochs = carConfig.getnEpochs();
-        double learningRate = 1e-3;
-//        double lrMomentum = 0.9;
+        double learningRate = 1e-4;
+        double lrMomentum = 0.5;
 
         int seed = 123;
         Random rng = new Random(seed);
@@ -122,7 +122,7 @@ public class CarParkingLearning {
         test.setPreProcessor(new ImagePreProcessingScaler(0, 1));
 
         ComputationGraph model;
-        String modelFilename = carConfig.getPath() + "/car_parking_model.zip";
+//        String modelFilename = carConfig.getPath() + "/car_parking_model.zip";
 
         log.info("Build model...");
         ComputationGraph pretrained = null;
@@ -138,8 +138,8 @@ public class CarParkingLearning {
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .gradientNormalization(GradientNormalization.RenormalizeL2PerLayer)
                 .gradientNormalizationThreshold(1.0)
-                .updater(new Adam.Builder().learningRate(learningRate).build())
-//                .updater(new Nesterovs.Builder().learningRate(learningRate).momentum(lrMomentum).build())
+//                .updater(new Adam.Builder().learningRate(learningRate).build())
+                .updater(new Nesterovs.Builder().learningRate(learningRate).momentum(lrMomentum).build())
                 .activation(Activation.IDENTITY)
                 .trainingWorkspaceMode(WorkspaceMode.ENABLED)
                 .inferenceWorkspaceMode(WorkspaceMode.ENABLED)
@@ -173,21 +173,21 @@ public class CarParkingLearning {
 
         System.out.println(model.summary(InputType.convolutional(height, width, nChannels)));
 
-        log.info("Train model...");
 
-        File exampleDirectory = new File(dataDir);
-        EarlyStoppingModelSaver saver = new LocalFileModelSaver(exampleDirectory);
-        EarlyStoppingConfiguration esConf = new EarlyStoppingConfiguration.Builder()
-                .epochTerminationConditions(new MaxEpochsTerminationCondition(1000),
-                 new BestScoreEpochTerminationCondition(0.01)) //Max of 50 epochs
-                .evaluateEveryNEpochs(1)
-                .scoreCalculator(new DataSetLossCalculator(test, true))     //Calculate test set score
-                .modelSaver(saver)
-                .saveLastModel(true)
-                .build();
+        EarlyStoppingModelSaver<ComputationGraph> saver = new LocalFileGraphSaver(dataDir);
+        EarlyStoppingConfiguration.Builder<ComputationGraph> builder = new EarlyStoppingConfiguration.Builder<ComputationGraph>();
+        builder.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(10000, 2));
+        builder.evaluateEveryNEpochs(1);
+        builder.scoreCalculator(new DataSetLossCalculator(test, true));
+        builder.modelSaver(saver);
+        builder.saveLastModel(true);
+        EarlyStoppingConfiguration<ComputationGraph> esConf = builder.build();
+
+        model.setListeners(new ScoreIterationListener(1));
 
         EarlyStoppingGraphTrainer trainer = new EarlyStoppingGraphTrainer(esConf,model, train);
 
+        log.info("Train model...");
         //Conduct early stopping training:
         EarlyStoppingResult result = trainer.fit();
 
@@ -205,9 +205,8 @@ public class CarParkingLearning {
         for( Integer i : list){
             System.out.println(i + "\t" + scoreVsEpoch.get(i));
         }
-
 //
-//        model.setListeners(new ScoreIterationListener(1));
+
 //        for (int i = 0; i < nEpochs; i++) {
 //            train.reset();
 //            while (train.hasNext()) {
